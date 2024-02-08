@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        String conString = "jdbc:postgresql://localhost:5432/postgres";
+        String conString = "jdbc:postgresql://localhost:5432/SURVEY";
         Connection con = null;
         ResultSet rs = null;
         Statement statement = null;
