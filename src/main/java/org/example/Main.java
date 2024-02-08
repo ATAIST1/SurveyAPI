@@ -1,11 +1,6 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.ResultSet;
-import java.sql.Statement;
-
+import java.sql.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -16,6 +11,10 @@ public class Main {
         try {
             con = DriverManager.getConnection(conString, "postgres", "0000");
             statement= con.createStatement();
+            rs = statement.executeQuery("SELECT id,name,");
+
+
+
         }catch(SQLException e) {
             System.out.println("cnnection server " + e.getMessage());
         }
