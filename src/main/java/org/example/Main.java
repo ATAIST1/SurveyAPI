@@ -35,6 +35,14 @@ public class Main {
             System.out.println("cnnection server: " + e.getMessage());
         }catch(ClassNotFoundException e){
             System.out.println("driver not found: " + e.getMessage());
+        }finally {
+            try{
+                if(con!=null)
+                    con.close();
+            }catch(SQLException e){
+                throw new RuntimeException(e);
+            }
+
         }
 
         for(User user : users){
