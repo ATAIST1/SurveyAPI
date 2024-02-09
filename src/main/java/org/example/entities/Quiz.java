@@ -13,6 +13,7 @@ public class Quiz {
     public Quiz() {
         questions = new ArrayList<Question>();
     }
+    public void addQuestion(Question question) {questions.add(question);}
 
-    public
+    public Quiz(String quizName) { setQuizName(quizName);}
 }

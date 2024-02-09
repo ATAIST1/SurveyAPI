@@ -2,12 +2,16 @@ package org.example.entities;
 
 public class User {
     private int id;
+    private static int id_gen = 1;
     private String name;
     private String surname;
     private String username;
 
-    public User(int id, String name, String surname, String username) {
-        this.id = id;
+    public User() {
+        id = id_gen++;
+    }
+
+    public User(String name, String surname, String username) {
         this.name = name;
         this.surname = surname;
         this.username = username;
