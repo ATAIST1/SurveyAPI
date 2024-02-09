@@ -1,5 +1,6 @@
 package org.example;
 
+import org.example.Services.UserService;
 import org.example.entities.User;
 
 import java.sql.*;
@@ -95,11 +96,13 @@ public class Main {
                 System.out.println("Create Password:");
                 String password = scanner.nextLine();
 
-                preparedStatement = connection.prepareStatement("INSERT INTO users (name, surname, username, password) VALUES (?, ?, ?, ?)");
                 preparedStatement.setString(1, name);
                 preparedStatement.setString(2, surname);
                 preparedStatement.setString(3, username);
                 preparedStatement.setString(4, password);
+
+                User user1 = new User(name, surname, username, password);
+                users.add(user1);
 
                 int rowsAffected = preparedStatement.executeUpdate();
 
@@ -112,7 +115,12 @@ public class Main {
 
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
+        }
+
+
+
+
+        finally {
             // Close resources in a finally block
             try {
                 if (preparedStatement != null) {
@@ -124,9 +132,14 @@ public class Main {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-
-
-
+        }
+        try {
+            System.out.println("Create survey: 1 " + "\n" + "Participate in a survey: 2");
+            int decision = scanner.nextInt();
+            if(decision == 1) {
+                UserService userService = new UserService();
+                userService.createSurvey();
+            }
         }
     }
 }

@@ -3,12 +3,10 @@ package org.example.entities;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.management.ConstructorParameters;
-
 @Getter
 @Setter
 
-public class Question {
+public class Question extends Survey {
     private String text;
     private String option1;
     private String option2;
