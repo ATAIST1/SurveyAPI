@@ -23,15 +23,16 @@ public class Main {
             Class.forName("org.postgresql.Driver");
             con = DriverManager.getConnection(conString, "postgres", "0000");
             statement = con.createStatement();
-            rs = statement.executeQuery("SELECT id,name,surname,username FROM users ORDER BY id");
+            rs = statement.executeQuery("SELECT id,name,surname,username, password FROM users ORDER BY id");
 
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
-                String username = rs.getString(("username"));
+                String username = rs.getString("username");
+                String password = rs.getString("password");
 
-                User user = new User(name, surname, username);
+                User user = new User(name, surname, username, password);
                 users.add(user);
             }
 
@@ -64,30 +65,51 @@ public class Main {
         try {
             connection = DriverManager.getConnection(conString, "postgres", "0000");
             // Create a PreparedStatement with a parameterized INSERT query
-            preparedStatement = connection.prepareStatement("INSERT INTO users (name, surname, username) VALUES (?, ?, ?)");
+            preparedStatement = connection.prepareStatement("INSERT INTO users (name, surname, username, password) VALUES (?, ?, ?, ?)");
 
-            // Ask the user for inputs
-            System.out.println("Enter Name:");
-            String name = scanner.nextLine();
-            System.out.println("Enter Surname:");
-            String surname = scanner.nextLine();
+            int rowNum = users.size();
+
             System.out.println("Enter Username:");
             String username = scanner.nextLine();
+            Boolean registered = false;
+            for (User user : users) {
+                if (user.getUsername().equals(username)) {
+                    registered = true;
+                    System.out.println("Enter Password:");
+                    String enteredPassword = scanner.nextLine();
 
-            // Set the parameters of the prepared statement
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, surname);
-            preparedStatement.setString(3, username);
-
-            // Execute the query
-            int rowsAffected = preparedStatement.executeUpdate();
-
-            // Check if the query was successful
-            if (rowsAffected > 0) {
-                System.out.println("User registered successfully!");
-            } else {
-                System.out.println("Failed to register user.");
+                    if (user.getPassword().equals(enteredPassword)) {
+                        System.out.println("Login successful!");
+                    } else {
+                        System.out.println("Incorrect password.");
+                    }
+                    break;
+                }
             }
+
+            if (!registered) {
+                System.out.println("Enter Name:");
+                String name = scanner.nextLine();
+                System.out.println("Enter Surname:");
+                String surname = scanner.nextLine();
+                System.out.println("Create Password:");
+                String password = scanner.nextLine();
+
+                preparedStatement = connection.prepareStatement("INSERT INTO users (name, surname, username, password) VALUES (?, ?, ?, ?)");
+                preparedStatement.setString(1, name);
+                preparedStatement.setString(2, surname);
+                preparedStatement.setString(3, username);
+                preparedStatement.setString(4, password);
+
+                int rowsAffected = preparedStatement.executeUpdate();
+
+                if (rowsAffected > 0) {
+                    System.out.println("User registered successfully!");
+                } else {
+                    System.out.println("Failed to register user.");
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

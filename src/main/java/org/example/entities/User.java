@@ -6,16 +6,20 @@ public class User {
     private String name;
     private String surname;
     private String username;
-
+    private String password;
     public User() {
         id = id_gen++;
     }
 
-    public User(String name, String surname, String username) {
+    public User(String name, String surname, String username, String password) {
         this.name = name;
         this.surname = surname;
         this.username = username;
+        this.password = password;
     }
+    public void setPassword(String password) { this.password = password;}
+    public String getPassword() {return this.password;}
+    public int getIdGen() {return id_gen;}
 
     public int getId() {
         return id;
