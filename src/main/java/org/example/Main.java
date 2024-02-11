@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 
@@ -27,12 +28,10 @@ public class Main {
             rs = statement.executeQuery("SELECT id,name,surname,username, password FROM users ORDER BY id");
 
             while (rs.next()) {
-                int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
                 String username = rs.getString("username");
                 String password = rs.getString("password");
-
                 User user = new User(name, surname, username, password);
                 users.add(user);
             }
@@ -83,7 +82,8 @@ public class Main {
                         System.out.println("Login successful!");
                     } else {
                         System.out.println("Incorrect password.");
-                    }
+
+                            }
                     break;
                 }
             }
@@ -96,10 +96,12 @@ public class Main {
                 System.out.println("Create Password:");
                 String password = scanner.nextLine();
 
+
                 preparedStatement.setString(1, name);
                 preparedStatement.setString(2, surname);
                 preparedStatement.setString(3, username);
                 preparedStatement.setString(4, password);
+
 
                 User user1 = new User(name, surname, username, password);
                 users.add(user1);
@@ -140,6 +142,15 @@ public class Main {
                 UserService userService = new UserService();
                 userService.createSurvey();
             }
+            else if(decision == 2) {
+
+            }
+            else {
+                throw new InputMismatchException("1 or 2 should be entered");
+            }
+        }
+        catch(InputMismatchException e) {
+            System.out.println("Invalid input: " + e.getMessage());
         }
     }
 }

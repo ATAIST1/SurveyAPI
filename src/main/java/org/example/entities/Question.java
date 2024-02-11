@@ -7,13 +7,19 @@ import lombok.Setter;
 @Setter
 
 public class Question extends Survey {
+    private int questionId;
+    private static int id_gen = 1;
     private String text;
-    private String option1;
-    private String option2;
-    private String option3;
-    private String option4;
+    private Option option1;
+    private Option option2;
+    private Option option3;
+    private Option option4;
 
-    public Question(String text, String option1, String option2, String option3, String option4) {
+    public Question() {
+        this.questionId = id_gen++;
+    }
+
+    public Question(String text, Option option1, Option option2, Option option3, Option option4) {
         setText(text);
         setOption1(option1);
         setOption2(option2);
