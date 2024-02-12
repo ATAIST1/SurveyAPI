@@ -8,11 +8,11 @@ public class User {
     private String username;
     private String password;
     public User() {
-
+        this.id = id_gen++;
     }
 
     public User(String name, String surname, String username, String password) {
-        this.id = id_gen++;
+
         this.name = name;
         this.surname = surname;
         this.username = username;

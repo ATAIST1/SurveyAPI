@@ -21,6 +21,7 @@ public class Main {
         ResultSet rs = null;
         Statement statement = null;
         ArrayList<User> users = new ArrayList<User>();
+        User user1 = new User();
         try {
             Class.forName("org.postgresql.Driver");
             con = DriverManager.getConnection(conString, "postgres", "0000");
@@ -103,7 +104,7 @@ public class Main {
                 preparedStatement.setString(4, password);
 
 
-                User user1 = new User(name, surname, username, password);
+                user1 = new User(name, surname, username, password);
                 users.add(user1);
 
                 int rowsAffected = preparedStatement.executeUpdate();
@@ -138,12 +139,12 @@ public class Main {
         try {
             System.out.println("Create survey: 1 " + "\n" + "Participate in a survey: 2");
             int decision = scanner.nextInt();
+            UserService userService = new UserService();
             if(decision == 1) {
-                UserService userService = new UserService();
-                userService.createSurvey();
+                userService.createSurvey(user1.getId());
             }
             else if(decision == 2) {
-
+                userService.participateSurvey(user1.getId());
             }
             else {
                 throw new InputMismatchException("1 or 2 should be entered");

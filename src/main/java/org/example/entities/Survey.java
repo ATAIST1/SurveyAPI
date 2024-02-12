@@ -19,9 +19,10 @@ public class Survey {
     }
     public void addQuestion(Question question) {questions.add(question);}
 
-    public Survey(String title, String description) {
+    public Survey(int user_id, String title, String description) {
         questions = new ArrayList<Question>();
         id = id_gen++;
+        setUser_id(user_id);
         setTitle(title);
         setDescription(description);}
 }
