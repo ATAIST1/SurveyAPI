@@ -20,6 +20,7 @@ public class Survey {
     public void addQuestion(Question question) {questions.add(question);}
 
     public Survey(int user_id, String title, String description) {
+        this();
         questions = new ArrayList<Question>();
         id = id_gen++;
         setUser_id(user_id);
