@@ -10,8 +10,11 @@ public class Option extends Question {
     private int questionId;
     private int optionId;
     private static int id_gen = 1;
-    public Option(String text, int questionId) {
+    public Option () {
         optionId = id_gen++;
+    }
+    public Option(String text, int questionId) {
+        this();
         this.text = text;
         this.questionId = questionId;
     }
