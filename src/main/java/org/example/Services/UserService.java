@@ -141,7 +141,24 @@ public class UserService {
             int selectedSurveyId = scanner.nextInt();
             for(Survey survey: surveysTable){
                 if(survey.getId() == selectedSurveyId) {
-
+                    System.out.println(survey.getTitle())
+                    int questionNum = survey.getQuestions().size();
+                    for(Question question : survey.getQuestions()) {
+                        System.out.println(question.getText());
+                        System.out.println("1. " + question.getOption1().getText());
+                        System.out.println("2. " + question.getOption2().getText());
+                        System.out.println("3. " + question.getOption3().getText());
+                        System.out.println("4. " + question.getOption4().getText());
+                        System.out.print("Your answer:");
+                        int answer = scanner.nextInt();
+                        Response response = new Response(survey.getId(), question.getQuestionId(), user_id, answer);
+                        responsesList.add(response);
+                        preparedStatement.setInt(1, response.getResponse_id());
+                        preparedStatement.setInt(2, response.getSurvey_id());
+                        preparedStatement.setInt(3, response.getQuestion_id());
+                        preparedStatement.setInt(4, response.getUser_id());
+                        preparedStatement.setInt(5, response.getAnswer());
+                    }
                 }
             }
 
