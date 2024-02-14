@@ -12,7 +12,7 @@ public class User {
     }
 
     public User(String name, String surname, String username, String password) {
-
+        this();
         this.name = name;
         this.surname = surname;
         this.username = username;
