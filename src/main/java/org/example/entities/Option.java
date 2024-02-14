@@ -4,17 +4,16 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter@Setter
-public class Option extends Question {
+public class Option {
 
     private String text;
     private int questionId;
     private int optionId;
-    private static int id_gen = 1;
-    public Option () {
-        optionId = id_gen++;
+    public Option() {
+
     }
-    public Option(String text, int questionId) {
-        this();
+    public Option(String text, int questionId, int optionId) {
+        setOptionId(optionId);
         this.text = text;
         this.questionId = questionId;
     }

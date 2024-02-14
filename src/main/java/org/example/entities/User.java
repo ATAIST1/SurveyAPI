@@ -2,17 +2,13 @@ package org.example.entities;
 
 public class User {
     private int id;
-    private static int id_gen = 1;
     private String name;
     private String surname;
     private String username;
     private String password;
-    public User() {
-        this.id = id_gen++;
-    }
-
-    public User(String name, String surname, String username, String password) {
-        this();
+    public User() {}
+    public User(String name, String surname, String username, String password, int user_id) {
+        setId(user_id);
         this.name = name;
         this.surname = surname;
         this.username = username;
@@ -20,7 +16,6 @@ public class User {
     }
     public void setPassword(String password) { this.password = password;}
     public String getPassword() {return this.password;}
-    public int getIdGen() {return id_gen;}
 
     public int getId() {
         return id;

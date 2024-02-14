@@ -17,11 +17,17 @@ public class UserService {
         PreparedStatement preparedStatement3 = null;
 
         Scanner scanner = new Scanner(System.in);
+        ResultSet rs = null;
+        Statement statement = null;
 
         try {
-            Class.forName("org.postgresql.Driver");
             con = DriverManager.getConnection(conString, "postgres", "0000");
-            preparedStatement = con.prepareStatement("INSERT INTO surveys (survey_id, title, description, user_id) VALUES (?, ?, ?, ?)");
+            statement = con.createStatement();
+            rs = statement.executeQuery("SELECT survey_id, title, description, created_at, user_id FROM surveys ORDER BY survey_id");
+
+            Class.forName("org.postgresql.Driver");
+
+            preparedStatement = con.prepareStatement("INSERT INTO surveys (title, description, user_id) VALUES (?, ?, ?)");
 
 
             System.out.println("Enter survey title:");
@@ -29,20 +35,26 @@ public class UserService {
             System.out.println("Enter survey description:");
             String description = scanner.nextLine();
 
-            Survey survey1 = new Survey(user_id, title, description);
 
-            preparedStatement.setInt(1, survey1.getId());
-            preparedStatement.setString(2, title);
-            preparedStatement.setString(3, description);
-            preparedStatement.setInt(4, survey1.getUser_id());
+            preparedStatement.setString(1, title);
+            preparedStatement.setString(2, description);
+            preparedStatement.setInt(3, user_id);
+
+            Survey survey1 = new Survey();
+            while(rs.next()) {
+                if(rs.isLast()) {
+                    survey1 = new Survey(user_id, title, description, rs.getInt("survey_id"));
+                }
+            }
 
 
 
             surveys.add(survey1);
 
-
+            ResultSet rsQuestion = statement.executeQuery("SELECT * FROM questions ORDER BY question_id");
+            ResultSet rsOption = statement.executeQuery("SELECT option_id, question_id, option_text FROM options ORDER BY option_id");
             preparedStatement2 = con.prepareStatement("INSERT INTO questions (question_id, survey_id, question_text) VALUES (?, ?, ?)");
-            preparedStatement3 = con.prepareStatement("INSERT INTO options (option_id, question_id, option_text) VALUES(?, ?, ?)");
+            preparedStatement3 = con.prepareStatement("INSERT INTO options (question_id, option_text) VALUES(?, ?)");
             System.out.println("How many questions you want to add?");
             int questionNumber = scanner.nextInt();
             Question question = new Question();
@@ -50,32 +62,52 @@ public class UserService {
             for (int i = 1; i <= questionNumber; i++) {
                 System.out.println("Your question number " + i + " is?");
                 String text = scanner.nextLine();
+                Option option1 = new Option();
+                Option option2 = new Option();
+                Option option3 = new Option();
+                Option option4 = new Option();
 
                 System.out.println("Your first option:");
-                Option option1 = new Option(scanner.nextLine(), question.getQuestionId());
-                preparedStatement3.setInt(1, option1.getOptionId());
-                preparedStatement3.setInt(2, question.getQuestionId());
-
+                String option1Text = scanner.nextLine();
+                preparedStatement3.setInt(1, question.getQuestionId());
+                preparedStatement3.setString(2, option1Text);
+                while(rsOption.next()) {
+                    if(rsOption.isLast()) {
+                        option1 = new Option(option1Text, question.getQuestionId(), rsOption.getInt("option_id"));
+                    }
+                }
                 System.out.println("Your second option:");
-                Option option2 = new Option(scanner.nextLine(), question.getQuestionId());
-                preparedStatement3.setInt(1, option2.getOptionId());
-                preparedStatement3.setInt(2, question.getQuestionId());
+                String option2Text = scanner.nextLine();
+                preparedStatement3.setInt(1, question.getQuestionId());
+                preparedStatement3.setString(2, option2Text);
+                while(rsOption.next()) {
+                    if(rsOption.isLast()) {
+                        option2 = new Option(option2Text, question.getQuestionId(), rsOption.getInt("option_id"));
+                    }
+                }
 
                 System.out.println("Your third option:");
-                Option option3 = new Option(scanner.nextLine(), question.getQuestionId());
-                preparedStatement3.setInt(1, option3.getOptionId());
-                preparedStatement3.setInt(2, question.getQuestionId());
+                String option3Text = scanner.nextLine();
+                preparedStatement3.setInt(1, question.getQuestionId());
+                preparedStatement3.setString(2, option3Text);
+                while(rsOption.next()) {
+                    if(rsOption.isLast()) {
+                        option3 = new Option(option3Text, question.getQuestionId(), rsOption.getInt("option_id"));
+                    }
+                }
 
                 System.out.println("Your fourth option:");
-                Option option4 = new Option(scanner.nextLine(), question.getQuestionId());
-                preparedStatement3.setInt(1, option4.getOptionId());
-                preparedStatement3.setInt(2, question.getQuestionId());
+                String option4Text = scanner.nextLine();
+                preparedStatement3.setInt(1, question.getQuestionId());
+                preparedStatement3.setString(2, option4Text);
+                while(rsOption.next()) {
+                    if(rsOption.isLast()) {
+                        option4 = new Option(option4Text, question.getQuestionId(), rsOption.getInt("option_id"));
+                    }
+                }
 
-
-                int surveyId = survey1.getId();
-
-                question = new Question(surveyId, text, option1, option2, option3, option4);
-                preparedStatement2.setInt(1, question.getQuestionId());
+                question = new Question(survey1.getId(), text, option1, option2, option3, option4, rsQuestion.getInt("question_id"));
+                preparedStatement2.setInt(1, rsQuestion.getInt("question_id"));
                 preparedStatement2.setInt(2, survey1.getId());
                 preparedStatement2.setString(3, text);
 
@@ -99,6 +131,8 @@ public class UserService {
             try {
                 if (con != null)
                     con.close();
+                if(rs != null)
+                    rs.close();
             } catch (SQLException e) {
                 System.out.println("could not close connection: " + e.getMessage());
             }
@@ -123,7 +157,7 @@ public class UserService {
                 String title = rs.getString("title");
                 String description = rs.getString("description");
                 int userId = rs.getInt("user_id");
-                Survey survey = new Survey(userId, title, description);
+                Survey survey = new Survey(userId, title, description, survey_id);
                 surveysTable.add(survey);
             }
             for(Survey survey: surveysTable) {

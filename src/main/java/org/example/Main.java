@@ -2,6 +2,7 @@ package org.example;
 
 import org.example.Services.UserService;
 import org.example.entities.User;
+import org.postgresql.util.PSQLException;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -29,11 +30,12 @@ public class Main {
             rs = statement.executeQuery("SELECT id,name,surname,username, password FROM users ORDER BY id");
 
             while (rs.next()) {
+                int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String surname = rs.getString("surname");
                 String username = rs.getString("username");
                 String password = rs.getString("password");
-                User user = new User(name, surname, username, password);
+                User user = new User(name, surname, username, password, id);
                 users.add(user);
             }
 
@@ -42,31 +44,25 @@ public class Main {
             System.out.println("connection server: " + e.getMessage());
         } catch (ClassNotFoundException e) {
             System.out.println("driver not found: " + e.getMessage());
-        } finally {
-            try {
-                if (con != null)
-                    con.close();
-            } catch (SQLException e) {
-                System.out.println("could not close connection: " + e.getMessage());
-            }
-
         }
 
         for (User user : users) {
             System.out.println(user);
         }
 
-        // Creating Connection type connection variable
-        Connection connection = null;
 
         //Initializing preparedStatement object
         PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
         Scanner scanner = new Scanner(System.in);
-
+        Statement stat = null;
         try {
-            connection = DriverManager.getConnection(conString, "postgres", "0000");
+            Class.forName("org.postgresql.Driver");
+            con = DriverManager.getConnection(conString, "postgres", "0000");
             // Create a PreparedStatement with a parameterized INSERT query
-            preparedStatement = connection.prepareStatement("INSERT INTO users (name, surname, username, password) VALUES (?, ?, ?, ?)");
+            stat = con.createStatement();
+            resultSet = statement.executeQuery("SELECT id FROM users ORDER BY id");
+            preparedStatement = con.prepareStatement("INSERT INTO users (name, surname, username, password) VALUES (?, ?, ?, ?)");
 
             int rowNum = users.size();
 
@@ -103,8 +99,12 @@ public class Main {
                 preparedStatement.setString(3, username);
                 preparedStatement.setString(4, password);
 
+                while(resultSet.next()) {
+                    if (resultSet.getString("username") == username){
+                        user1 = new User(name, surname, username, password, resultSet.getInt(resultSet.getInt("id")));
+                    }
+                }
 
-                user1 = new User(name, surname, username, password);
                 users.add(user1);
 
                 int rowsAffected = preparedStatement.executeUpdate();
@@ -117,9 +117,11 @@ public class Main {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.getMessage();
         }
-
+        catch(ClassNotFoundException e) {
+            e.getMessage();
+        }
 
 
 
@@ -129,8 +131,8 @@ public class Main {
                 if (preparedStatement != null) {
                     preparedStatement.close();
                 }
-                if (connection != null) {
-                    connection.close();
+                if (con != null) {
+                    con.close();
                 }
             } catch (SQLException e) {
                 e.printStackTrace();

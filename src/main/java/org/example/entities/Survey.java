@@ -16,12 +16,12 @@ public class Survey {
 
     public Survey() {
         questions = new ArrayList<Question>();
-        id = id_gen++;
     }
     public void addQuestion(Question question) {questions.add(question);}
 
-    public Survey(int user_id, String title, String description) {
+    public Survey(int user_id, String title, String description, int survey_id) {
         this();
+        setId(survey_id);
         setUser_id(user_id);
         setTitle(title);
         setDescription(description);}
