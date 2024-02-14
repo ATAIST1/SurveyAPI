@@ -21,6 +21,7 @@ public class Question extends Survey {
     }
 
     public Question(int surveyId, String text, Option option1, Option option2, Option option3, Option option4) {
+        this();
         this.surveyId = surveyId;
         setText(text);
         setOption1(option1);
