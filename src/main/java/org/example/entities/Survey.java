@@ -15,15 +15,24 @@ public class Survey {
     private ArrayList<Question> questions;
 
     public Survey() {
-
+        questions = new ArrayList<Question>();
+        id = id_gen++;
     }
     public void addQuestion(Question question) {questions.add(question);}
 
     public Survey(int user_id, String title, String description) {
         this();
-        questions = new ArrayList<Question>();
-        id = id_gen++;
         setUser_id(user_id);
         setTitle(title);
         setDescription(description);}
+
+    @Override
+    public String toString() {
+        return "Survey{" +
+                "id=" + id +
+                ", user_id=" + user_id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

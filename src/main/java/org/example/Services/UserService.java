@@ -1,9 +1,6 @@
 package org.example.Services;
 
-import org.example.entities.Survey;
-import org.example.entities.Question;
-import org.example.entities.Option;
-import org.example.entities.User;
+import org.example.entities.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -53,9 +50,6 @@ public class UserService {
             for (int i = 1; i <= questionNumber; i++) {
                 System.out.println("Your question number " + i + " is?");
                 String text = scanner.nextLine();
-
-                System.out.println("How many options you want to add?");
-                int numOfOptions = scanner.nextInt();
 
                 System.out.println("Your first option:");
                 Option option1 = new Option(scanner.nextLine(), question.getQuestionId());
@@ -123,7 +117,7 @@ public class UserService {
             Class.forName("org.postgresql.Driver");
             con = DriverManager.getConnection(conString, "postgres", "0000");
             statement = con.createStatement();
-            rs = statement.executeQuery("SELECT survey_id, title, description, user_id FROM users ORDER BY id");
+            rs = statement.executeQuery("SELECT survey_id, title, description, user_id FROM surveys ORDER BY survey_id");
             while(rs.next()) {
                 int survey_id = rs.getInt("survey_id");
                 String title = rs.getString("title");
@@ -139,9 +133,10 @@ public class UserService {
             PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO responses (response_id, survey_id, question_id, user_id, answer) VALUES (?, ?, ?, ?, ?)");
             System.out.println("Which survey you want to answer? (Enter survey_id) ");
             int selectedSurveyId = scanner.nextInt();
+            ArrayList<Response> responsesList = new ArrayList<Response>();
             for(Survey survey: surveysTable){
                 if(survey.getId() == selectedSurveyId) {
-                    System.out.println(survey.getTitle())
+                    System.out.println(survey.getTitle());
                     int questionNum = survey.getQuestions().size();
                     for(Question question : survey.getQuestions()) {
                         System.out.println(question.getText());
@@ -159,6 +154,9 @@ public class UserService {
                         preparedStatement.setInt(4, response.getUser_id());
                         preparedStatement.setInt(5, response.getAnswer());
                     }
+                }
+                else{
+                    System.out.println("No survey with such ID");
                 }
             }
 
