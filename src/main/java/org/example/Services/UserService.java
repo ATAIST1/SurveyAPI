@@ -136,7 +136,14 @@ public class UserService {
                 System.out.println(survey);
             }
 
+            PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO responses (response_id, survey_id, question_id, user_id, answer) VALUES (?, ?, ?, ?, ?)");
             System.out.println("Which survey you want to answer? (Enter survey_id) ");
+            int selectedSurveyId = scanner.nextInt();
+            for(Survey survey: surveysTable){
+                if(survey.getId() == selectedSurveyId) {
+
+                }
+            }
 
 
         }
