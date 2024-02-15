@@ -176,14 +176,13 @@ public class UserService {
                 System.out.println(survey);
             }
 
-            PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO responses (response_id, survey_id, question_id, user_id, answer) VALUES (?, ?, ?, ?, ?)");
+            PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO responses (survey_id, question_id, user_id, answer) VALUES (?, ?, ?, ?)");
             System.out.println("Which survey you want to answer? (Enter survey_id) ");
             int selectedSurveyId = scanner.nextInt();
             ArrayList<Response> responsesList = new ArrayList<Response>();
             for(Survey survey: surveysTable){
                 if(survey.getId() == selectedSurveyId) {
                     System.out.println(survey.getTitle());
-                    int questionNum = survey.getQuestions().size();
                     for(Question question : survey.getQuestions()) {
                         System.out.println(question.getText());
                         System.out.println("1. " + question.getOption1().getText());
@@ -194,17 +193,22 @@ public class UserService {
                         int answer = scanner.nextInt();
                         Response response = new Response(survey.getId(), question.getQuestionId(), user_id, answer);
                         responsesList.add(response);
-                        preparedStatement.setInt(1, response.getResponse_id());
-                        preparedStatement.setInt(2, response.getSurvey_id());
-                        preparedStatement.setInt(3, response.getQuestion_id());
-                        preparedStatement.setInt(4, response.getUser_id());
-                        preparedStatement.setInt(5, response.getAnswer());
+
                     }
+                    break;
                 }
-                else{
-                    System.out.println("No survey with such ID");
-                }
+
             }
+            for(Response response: responsesList) {
+                preparedStatement.setInt(1, response.getSurvey_id());
+                preparedStatement.setInt(2, response.getQuestion_id());
+                preparedStatement.setInt(3, response.getUser_id());
+                preparedStatement.setInt(4, response.getAnswer());
+
+                preparedStatement.executeUpdate();
+            }
+
+
 
 
         }
