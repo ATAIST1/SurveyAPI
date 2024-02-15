@@ -19,6 +19,7 @@ public class UserService {
         Scanner scanner = new Scanner(System.in);
         ResultSet rs = null;
         Statement statement = null;
+        Statement stmnt = null;
 
         try {
             con = DriverManager.getConnection(conString, "postgres", "0000");
@@ -27,7 +28,7 @@ public class UserService {
 
             Class.forName("org.postgresql.Driver");
 
-            preparedStatement = con.prepareStatement("INSERT INTO surveys (title, description, user_id) VALUES (?, ?, ?)");
+            preparedStatement = con.prepareStatement("INSERT INTO surveys (title, description) VALUES (?, ?)");
 
 
             System.out.println("Enter survey title:");
@@ -38,7 +39,6 @@ public class UserService {
 
             preparedStatement.setString(1, title);
             preparedStatement.setString(2, description);
-            preparedStatement.setInt(3, user_id);
 
             Survey survey1 = new Survey();
             while(rs.next()) {
@@ -51,7 +51,8 @@ public class UserService {
 
             surveys.add(survey1);
 
-            ResultSet rsQuestion = statement.executeQuery("SELECT * FROM questions ORDER BY question_id");
+            stmnt = con.createStatement();
+            ResultSet rsQuestion = stmnt.executeQuery("SELECT * FROM questions ORDER BY question_id");
             ResultSet rsOption = statement.executeQuery("SELECT option_id, question_id, option_text FROM options ORDER BY option_id");
             preparedStatement2 = con.prepareStatement("INSERT INTO questions (question_id, survey_id, question_text) VALUES (?, ?, ?)");
             preparedStatement3 = con.prepareStatement("INSERT INTO options (question_id, option_text) VALUES(?, ?)");
@@ -106,8 +107,12 @@ public class UserService {
                     }
                 }
 
-                question = new Question(survey1.getId(), text, option1, option2, option3, option4, rsQuestion.getInt("question_id"));
-                preparedStatement2.setInt(1, rsQuestion.getInt("question_id"));
+                while(rsQuestion.next()) {
+                    if (rsQuestion.isLast()) {
+                        question = new Question(survey1.getId(), text, option1, option2, option3, option4, rsQuestion.getInt("question_id"));
+                        preparedStatement2.setInt(1, rsQuestion.getInt("question_id"));
+                    }
+                }
                 preparedStatement2.setInt(2, survey1.getId());
                 preparedStatement2.setString(3, text);
 
@@ -127,16 +132,23 @@ public class UserService {
             System.out.println("connection server: " + e.getMessage());
         } catch(ClassNotFoundException e){
             System.out.println("driver not found: " + e.getMessage());
-        }finally{
+        }finally {
             try {
                 if (con != null)
                     con.close();
-                if(rs != null)
+                if (rs != null)
                     rs.close();
+                if (statement != null)
+                    statement.close();
+                if (preparedStatement != null)
+                    preparedStatement.close();
+                if (preparedStatement2 != null)
+                    preparedStatement2.close();
+                if (preparedStatement3 != null)
+                    preparedStatement3.close();
             } catch (SQLException e) {
                 System.out.println("could not close connection: " + e.getMessage());
             }
-
         }
     }
     public void participateSurvey(int user_id) {
