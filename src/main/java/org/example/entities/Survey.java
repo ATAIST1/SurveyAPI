@@ -17,7 +17,7 @@ public class Survey {
     public Survey() {
         questions = new ArrayList<Question>();
     }
-    public void addQuestion(Question question) {questions.add(question);}
+    public void addQuestion(Question question) {this.questions.add(question);}
 
     public Survey(int user_id, String title, String description, int survey_id) {
         this();
