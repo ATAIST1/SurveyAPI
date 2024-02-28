@@ -71,51 +71,11 @@ public class UserService {
                     }
                 }
 
-                Option option1 = new Option();
-                Option option2 = new Option();
-                Option option3 = new Option();
-                Option option4 = new Option();
 
                 preparedStatement2.setInt(1, survey1.getId());
 
-                System.out.println("Your first option:");
-                String option1Text = scanner.nextLine();
-                preparedStatement3.setInt(1, question.getQuestionId());
-                preparedStatement3.setString(2, option1Text);
-                while(rsOption.next()) {
-                    if(rsOption.isLast()) {
-                        option1 = new Option(option1Text, question.getQuestionId(), rsOption.getInt("option_id"));
-                    }
-                }
-                System.out.println("Your second option:");
-                String option2Text = scanner.nextLine();
-                preparedStatement3.setInt(1, question.getQuestionId());
-                preparedStatement3.setString(2, option2Text);
-                while(rsOption.next()) {
-                    if(rsOption.isLast()) {
-                        option2 = new Option(option2Text, question.getQuestionId(), rsOption.getInt("option_id"));
-                    }
-                }
 
-                System.out.println("Your third option:");
-                String option3Text = scanner.nextLine();
-                preparedStatement3.setInt(1, question.getQuestionId());
-                preparedStatement3.setString(2, option3Text);
-                while(rsOption.next()) {
-                    if(rsOption.isLast()) {
-                        option3 = new Option(option3Text, question.getQuestionId(), rsOption.getInt("option_id"));
-                    }
-                }
 
-                System.out.println("Your fourth option:");
-                String option4Text = scanner.nextLine();
-                preparedStatement3.setInt(1, question.getQuestionId());
-                preparedStatement3.setString(2, option4Text);
-                while(rsOption.next()) {
-                    if(rsOption.isLast()) {
-                        option4 = new Option(option4Text, question.getQuestionId(), rsOption.getInt("option_id"));
-                    }
-                }
 
 
                 question.addOption(option1);
