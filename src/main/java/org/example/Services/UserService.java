@@ -64,6 +64,7 @@ public class UserService {
                 System.out.println("Your question number " + i + " is?");
                 String text = scanner.nextLine();
 
+
                 while(rsQuestion.next()) {
                     if (rsQuestion.isLast()) {
                         question = new Question(rs.getInt("survey_id"), text, rsQuestion.getInt("question_id"));
