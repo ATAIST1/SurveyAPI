@@ -128,6 +128,8 @@ public class UserService {
                 survey1.addQuestion(question);
             }
             int rowsAffected = preparedStatement.executeUpdate();
+            preparedStatement3.executeUpdate();
+            preparedStatement2.executeUpdate();
 
             if (rowsAffected > 0) {
                 System.out.println("Survey created successfully!");
@@ -199,20 +201,23 @@ public class UserService {
                             }
                         }
                         question = new Question(survey_id, QuestionText, question_id);
+
                         survey.addQuestion(question);
                     }
                 }
                 surveysTable.add(survey);
             }
+
             for(Survey survey: surveysTable) {
                 System.out.println(survey);
+                System.out.println(survey.getQuestions());
             }
 
             PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO responses (survey_id, question_id, user_id, answer) VALUES (?, ?, ?, ?)");
             System.out.println("Which survey you want to answer? (Enter survey_id) ");
             int selectedSurveyId = scanner.nextInt();
-            ArrayList<Response> responsesList = new ArrayList<Response>();
 
+            ArrayList<Response> responsesList = new ArrayList<Response>();
             for(Survey survey: surveysTable){
                 if(survey.getId() == selectedSurveyId) {
                     System.out.println(survey.getTitle());
