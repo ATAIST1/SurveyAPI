@@ -49,11 +49,10 @@ public class UserService {
             }
 
 
-
             surveys.add(survey1);
 
             stmnt = con.createStatement();
-            ResultSet rsQuestion = stmnt.executeQuery("SELECT * FROM questions ORDER BY question_id");
+            ResultSet rsQuestion = stmnt.executeQuery("SELECT question_id, survey_id, question_text FROM questions ORDER BY question_id");
             ResultSet rsOption = statement.executeQuery("SELECT option_id, question_id, option_text FROM options ORDER BY option_id");
             preparedStatement2 = con.prepareStatement("INSERT INTO questions (survey_id, question_text) VALUES (?, ?)");
             preparedStatement3 = con.prepareStatement("INSERT INTO options (question_id, option_text) VALUES(?, ?)");
@@ -65,24 +64,38 @@ public class UserService {
                 System.out.println("Your question number " + i + " is?");
                 String text = scanner.nextLine();
 
+                preparedStatement2.setInt(1, survey1.getId());
+                preparedStatement2.setString(2, text);
+                preparedStatement2.executeUpdate();
 
+                int question_id = 0;
+                while(rsQuestion.next()) {
+                    if(rsQuestion.isLast()){
+                        question_id = rsQuestion.getInt("question_id");
+                    }
+                }
                 while(rsQuestion.next()) {
                     if (rsQuestion.isLast()) {
-                        question = new Question(rs.getInt("survey_id"), text, rsQuestion.getInt("question_id"));
+                        question = new Question(survey1.getId(), text, rsQuestion.getInt("question_id"));
                     }
                 }
 
+                for(int j = 1; j <= 4; j++){
+                    System.out.println("Your option number " + j + ":");
+                    String optionText = scanner.nextLine();
 
-                preparedStatement2.setInt(1, survey1.getId());
+                    preparedStatement3.setInt(1, question_id);
+                    preparedStatement3.setString(2, optionText);
+                    preparedStatement3.addBatch();
+                    while(rsOption.next()) {
+                        if(rsOption.isLast()) {
+                            Option option = new Option(optionText, question_id, rsOption.getInt("option_id"));
+                            question.addOption(option);
+                        }
+                    }
+                }
+                preparedStatement3.executeBatch();
 
-
-
-
-
-                question.addOption(option1);
-                question.addOption(option2);
-                question.addOption(option3);
-                question.addOption(option4);
                 preparedStatement2.setInt(1, survey1.getId());
                 preparedStatement2.setString(2, text);
 
