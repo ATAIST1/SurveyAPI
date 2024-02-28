@@ -211,6 +211,7 @@ public class UserService {
             System.out.println("Which survey you want to answer? (Enter survey_id) ");
             int selectedSurveyId = scanner.nextInt();
             ArrayList<Response> responsesList = new ArrayList<Response>();
+
             for(Survey survey: surveysTable){
                 if(survey.getId() == selectedSurveyId) {
                     System.out.println(survey.getTitle());
@@ -235,7 +236,7 @@ public class UserService {
                 preparedStatement.setInt(2, response.getQuestion_id());
                 preparedStatement.setInt(3, response.getUser_id());
                 preparedStatement.setInt(4, response.getAnswer());
-
+                preparedStatement.setInt(5, response.getAnswer());
                 preparedStatement.executeUpdate();
             }
 
