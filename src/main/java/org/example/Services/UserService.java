@@ -21,6 +21,7 @@ public class UserService {
         Statement statement = null;
         Statement stmnt = null;
 
+
         try {
             con = DriverManager.getConnection(conString, "postgres", "0000");
             statement = con.createStatement();
@@ -178,10 +179,12 @@ public class UserService {
             int selectedSurveyId = scanner.nextInt();
 
             ArrayList<Response> responsesList = new ArrayList<Response>();
-            for(Survey survey: surveysTable){
-                if(survey.getId() == selectedSurveyId) {
+            for (Survey survey : surveysTable) {
+                if (survey.getId() == selectedSurveyId) {
                     System.out.println(survey.getTitle());
-                    for(Question question : survey.getQuestions()) {
+                    ps.setInt(1, selectedSurveyId);
+                    ResultSet resultSet = ps.executeQuery();
+                    for (Question question : survey.getQuestions()) {
                         System.out.println(question.getText());
                         System.out.println("1. " + question.getOptions().get(1).getText());
                         System.out.println("2. " + question.getOptions().get(2).getText());
@@ -189,13 +192,15 @@ public class UserService {
                         System.out.println("4. " + question.getOptions().get(4).getText());
                         System.out.print("Your answer:");
                         int answer = scanner.nextInt();
-                        Response response = new Response(survey.getId(), question.getQuestionId(), user_id, answer);
+                        Response response = new Response(selectedSurveyId, question.getQuestionId(), user_id, answer);
                         responsesList.add(response);
-
+                        preparedStatement.setInt(1, response.getResponse_id());
+                        preparedStatement.setInt(2, response.getSurvey_id());
+                        preparedStatement.setInt(3, response.getQuestion_id());
+                        preparedStatement.setInt(4, response.getUser_id());
+                        preparedStatement.setInt(5, response.getAnswer());
                     }
-                    break;
                 }
-
             }
             for(Response response: responsesList) {
                 preparedStatement.setInt(1, response.getSurvey_id());
